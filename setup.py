@@ -42,7 +42,7 @@ class PyTest(Command):
 setup(name='subprocess.run',
       version=run.__version__,
       data_files = [
-         (get_python_lib(), [pth_file]),
+         (get_python_lib(prefix=''), [pth_file]),
       ],
       packages=find_packages(),
       author='Sebastian Pawluś',
