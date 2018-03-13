@@ -50,6 +50,8 @@ import subprocess
 
 __version__ = "0.0.8"
 
+str_type = str if sys.version_info.major >= 3 else basestring
+
 
 class std_output(str):
 
@@ -118,7 +120,7 @@ class run(runmeta('base_run', (std_output, ), {})):
     @classmethod
     def create_process(cls, command, stdin, cwd, env, shell):
         return subprocess.Popen(
-            shlex.split(command),
+            shlex.split(command) if isinstance(command, str_type) else command,
             universal_newlines=True,
             shell=shell,
             cwd=cwd,
@@ -173,7 +175,10 @@ class run(runmeta('base_run', (std_output, ), {})):
         return std_output(self.process.communicate()[1])
 
     def __repr__(self):
-        return " | ".join([e.command for e in self.chain])
+        return " | ".join([
+            e.command if isinstance(e.command, str_type) else ' '.join(e.command)
+            for e in self.chain
+        ])
 
 
 if __name__ == "__main__":
