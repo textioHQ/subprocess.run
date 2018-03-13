@@ -159,10 +159,24 @@ class run(runmeta('base_run', (std_output, ), {})):
 
         return obj
 
+    def check_returncode(self):
+        if self.returncode != 0:
+            raise subprocess.CalledProcessError(
+                returncode=self.returncode,
+                cmd=self.command,
+            )
+
+    @property
+    def returncode(self):
+        return self.status
+
     @property
     def status(self):
-        self.process.communicate()
-        return self.process.returncode
+        if not hasattr(self, '_status'):
+            self.process.communicate()
+            self._status = self.process.returncode
+
+        return self._status
 
     @property
     def stdout(self):
