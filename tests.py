@@ -60,6 +60,24 @@ def test_status():
     assert run('%s not_existing_directory' % _commands.rm).status != 0
 
 
+def test_returncode():
+    assert run(_commands.ls).returncode == 0
+    # win workaround
+    assert run('%s not_existing_directory' % _commands.rm).returncode != 0
+
+
+def test_check_returncode():
+    assert run(_commands.ls).check_returncode() is None
+
+    # win workaround
+    try:
+        run('%s not_existing_directory' % _commands.rm).check_returncode()
+    except subprocess.CalledProcessError:
+        pass
+    else:
+        raise AssertionError('CalledProcessError was not raised')
+
+
 def test_chain():
     command = run('ps aux', 'wc -l', 'wc -c')
 
