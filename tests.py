@@ -26,14 +26,20 @@ if sys.platform.startswith('win'):
 
 
 def test_run():
-    output = run(_commands.ls)
+    to_run = [
+        _commands.ls,
+        [_commands.ls],
+    ]
 
-    assert output.lines
-    assert output
+    for cmd in to_run:
+        output = run(cmd)
 
-    assert isinstance(output.lines, list)
-    assert isinstance(output.qlines, list)
-    assert isinstance(output.qlines[0], list)
+        assert output.lines
+        assert output
+
+        assert isinstance(output.lines, list)
+        assert isinstance(output.qlines, list)
+        assert isinstance(output.qlines[0], list)
 
 
 def test_stdout():
