@@ -116,7 +116,16 @@ class run(runmeta('base_run', (std_output, ), {})):
     """
 
     @classmethod
-    def create_process(cls, command, stdin, cwd, env, shell):
+    def create_process(cls, command, stdin, cwd, env, shell, capture_output=False, **kwargs):
+        extra_args = kwargs.copy()
+
+        if capture_output:
+            if 'stdout' in kwargs or 'stderr' in kwargs:
+                raise ValueError('capture_output will override stdout/stderr kwargs')
+
+            extra_args['stdout'] = subprocess.PIPE
+            extra_args['stderr'] = subprocess.PIPE
+
         return subprocess.Popen(
             shlex.split(command),
             universal_newlines=True,
@@ -124,9 +133,8 @@ class run(runmeta('base_run', (std_output, ), {})):
             cwd=cwd,
             env=env,
             stdin=stdin,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
             bufsize=0,
+            **extra_args
         )
 
     def __new__(cls, *args, **kwargs):
