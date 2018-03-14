@@ -14,6 +14,7 @@ unix = pytest.mark.skipif(
 # dafault _commands
 class _commands:
     ls = 'ls -la'
+    ls_list = ['ls', '-la']
     rm = 'rm -r'
     more = 'more'
 
@@ -21,6 +22,7 @@ class _commands:
 if sys.platform.startswith('win'):
     class _commands:
         ls = 'dir'
+        ls_list = ['dir']
         rm = 'rmdir'
         more = 'more'
 
@@ -28,7 +30,7 @@ if sys.platform.startswith('win'):
 def test_run():
     to_run = [
         _commands.ls,
-        [_commands.ls],
+        _commands.ls_list,
     ]
 
     for cmd in to_run:
